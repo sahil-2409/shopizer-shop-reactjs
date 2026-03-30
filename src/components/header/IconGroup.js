@@ -15,7 +15,7 @@ const IconGroup = ({
   // currency,
   cartData,
   cartCount,
-  // wishlistData,
+  wishlistCount,
   // compareData,
   deleteFromCart,
   iconWhiteClass,
@@ -234,14 +234,14 @@ const IconGroup = ({
           </span>
         </Link>
       </div> */}
-      {/* <div className="same-style header-wishlist">
-        <Link to={process.env.PUBLIC_URL + "/wishlist"}>
+      <div className="same-style header-wishlist">
+        <Link to="/wishlist">
           <i className="pe-7s-like" />
           <span className="count-style">
-            {wishlistData && wishlistData.length ? wishlistData.length : 0}
+            {wishlistCount}
           </span>
         </Link>
-      </div> */}
+      </div>
       {
         pathname.url !== '/checkout' &&
         <div className="same-style cart-wrap d-none d-lg-block">
@@ -289,6 +289,7 @@ const mapStateToProps = state => {
   return {
     cartData: state.cartData.cartItems,
     cartCount: state.cartData.cartCount,
+    wishlistCount: state.wishlistData.wishlistItems.length,
     userData: state.userData.userData
   };
 };

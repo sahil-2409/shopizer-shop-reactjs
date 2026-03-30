@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 // import { getProductCartQuantity } from "../../helpers/product";
 import { isValidObject } from "../../util/helper";
 import { addToCart } from "../../redux/actions/cartActions";
-// import { addToWishlist } from "../../redux/actions/wishlistActions";
+import { addToWishlist, removeFromWishlist } from "../../redux/actions/wishlistActions";
 // import { addToCompare } from "../../redux/actions/compareActions";
 // import Rating from "./sub-components/ProductRating";
 import StarRatings from 'react-star-ratings';
@@ -19,17 +19,17 @@ const ProductDescriptionInfo = ({
   finalDiscountedPrice,
   finalProductPrice,
   cartItems,
-  // wishlistItem,
+  wishlistItem,
   // compareItem,
   addToast,
   addToCart,
+  addToWishlist,
+  removeFromWishlist,
   setLoader,
   productID,
   defaultStore,
   userData,
   strings
-  // addToWishlist,
-  // addToCompare
 }) => {
   const [discountedPrice, setDiscountedPrice] = useState(finalDiscountedPrice)
   const [productPrice, setProductPrice] = useState(finalProductPrice)
@@ -308,34 +308,16 @@ const ProductDescriptionInfo = ({
                 <button disabled>{strings["Out of Stock"]}</button>
               )}
           </div>
-          {/* <div className="pro-details-wishlist">
+          <div className="pro-details-wishlist">
             <button
               className={wishlistItem !== undefined ? "active" : ""}
-              disabled={wishlistItem !== undefined}
-              title={
-                wishlistItem !== undefined
-                  ? "Added to wishlist"
-                  : "Add to wishlist"
-              }
-              onClick={() => addToWishlist(product, addToast)}
+              title={wishlistItem !== undefined ? "Added to wishlist" : "Add to wishlist"}
+              onClick={() => wishlistItem ? removeFromWishlist(product, addToast) : addToWishlist(product, addToast)}
             >
               <i className="pe-7s-like" />
             </button>
           </div>
-          <div className="pro-details-compare">
-            <button
-              className={compareItem !== undefined ? "active" : ""}
-              disabled={compareItem !== undefined}
-              title={
-                compareItem !== undefined
-                  ? "Added to compare"
-                  : "Add to compare"
-              }
-              onClick={() => addToCompare(product, addToast)}
-            >
-              <i className="pe-7s-shuffle" />
-            </button>
-          </div> */}
+          */}
         </div>
         // )
       }
@@ -440,7 +422,8 @@ const mapStateToProps = (state, ownProps) => {
     productID: prodID,
     cartItems: state.cartData.cartItems,
     defaultStore: state.merchantData.defaultStore,
-    userData: state.userData.userData
+    userData: state.userData.userData,
+    wishlistItem: state.wishlistData.wishlistItems.find(item => item.id === prodID)
   };
 };
 const mapDispatchToProps = dispatch => {
@@ -471,12 +454,8 @@ const mapDispatchToProps = dispatch => {
         )
       );
     },
-    // addToWishlist: (item, addToast) => {
-    //   dispatch(addToWishlist(item, addToast));
-    // },
-    // addToCompare: (item, addToast) => {
-    //   dispatch(addToCompare(item, addToast));
-    // }
+    addToWishlist: (item, addToast) => dispatch(addToWishlist(item, addToast)),
+    removeFromWishlist: (item, addToast) => dispatch(removeFromWishlist(item, addToast)),
   };
 };
 

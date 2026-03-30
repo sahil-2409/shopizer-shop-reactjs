@@ -6,6 +6,7 @@ import { useToasts } from "react-toast-notifications";
 // import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
 import { setProductID } from "../../redux/actions/productActions";
+import { addToWishlist, removeFromWishlist } from "../../redux/actions/wishlistActions";
 import { connect } from "react-redux";
 import StarRatings from 'react-star-ratings';
 const ProductGridListSingle = ({
@@ -22,7 +23,10 @@ const ProductGridListSingle = ({
   setProductID,
   defaultStore,
   userData,
-  strings
+  strings,
+  wishlistItems,
+  addToWishlist,
+  removeFromWishlist
 }) => {
   const [modalShow, setModalShow] = useState(false);
   const { addToast } = useToasts();
@@ -30,6 +34,7 @@ const ProductGridListSingle = ({
   // const discountedPrice = getDiscountPrice(product.price, product.discount);
   const finalProductPrice = product.originalPrice;
   const finalDiscountedPrice = product.finalPrice;
+  const wishlistItem = wishlistItems && wishlistItems.find(item => item.id === product.id);
   const onClickProductDetails = (id) => {
     setProductID(id)
   }
@@ -57,9 +62,13 @@ const ProductGridListSingle = ({
 
             <div className="product-action">
               <div className="pro-same-action pro-wishlist">
-                <Link to={"/product/" + product.description.friendlyUrl} onClick={() => onClickProductDetails(product.id)} title="Select options">
-                  <i className="fa fa-cog"></i>
-                </Link>
+                <button
+                  className={wishlistItem !== undefined ? "active" : ""}
+                  title={wishlistItem !== undefined ? "Added to wishlist" : "Add to wishlist"}
+                  onClick={() => wishlistItem ? removeFromWishlist(product, addToast) : addToWishlist(product, addToast)}
+                >
+                  <i className="fa fa-heart-o" />
+                </button>
               </div>
               <div className="pro-same-action pro-cart">
 
@@ -258,14 +267,17 @@ function defaultImage(product) {
 
 const mapStateToProps = state => {
   return {
-    defaultStore: state.merchantData.defaultStore
+    defaultStore: state.merchantData.defaultStore,
+    wishlistItems: state.wishlistData.wishlistItems
   };
 };
 const mapDispatchToProps = dispatch => {
   return {
     setProductID: (value) => {
       dispatch(setProductID(value));
-    }
+    },
+    addToWishlist: (product, addToast) => dispatch(addToWishlist(product, addToast)),
+    removeFromWishlist: (product, addToast) => dispatch(removeFromWishlist(product, addToast)),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ProductGridListSingle);
